@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Microsoft Open Technologies, Inc. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
+
 namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
-    using System;
-
     // This class contains utility methods for dealing with security contexts when crossing AppDomain boundaries.
-
     internal static class Utf16StringValidator
     {
         private const char UNICODE_NULL_CHAR = '\0';
