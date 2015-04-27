@@ -10,7 +10,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
     internal class JavaScriptObjectDeserializer
     {
-        internal JavaScriptString _s;
+        internal JsonString _s;
         private JavaScriptSerializer _serializer;
         private int _depthLimit;
 
@@ -27,7 +27,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
         private JavaScriptObjectDeserializer(string input, int depthLimit, JavaScriptSerializer serializer)
         {
-            _s = new JavaScriptString(input);
+            _s = new JsonString(input);
             _depthLimit = depthLimit;
             _serializer = serializer;
         }

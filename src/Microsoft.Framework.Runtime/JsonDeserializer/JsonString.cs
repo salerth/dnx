@@ -5,21 +5,22 @@ using System;
 
 namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
-    internal class JavaScriptString
+    internal class JsonString
     {
-        private string _s;
+        private readonly string _content;
+
         private int _index;
 
-        internal JavaScriptString(string s)
+        public JsonString(string content)
         {
-            _s = s;
+            _content = content;
         }
 
-        internal Nullable<char> GetNextNonEmptyChar()
+        public Nullable<char> GetNextNonEmptyChar()
         {
-            while (_s.Length > _index)
+            while (_content.Length > _index)
             {
-                char c = _s[_index++];
+                char c = _content[_index++];
                 if (!Char.IsWhiteSpace(c))
                 {
                     return c;
@@ -29,21 +30,21 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             return null;
         }
 
-        internal Nullable<char> MoveNext()
+        public Nullable<char> MoveNext()
         {
-            if (_s.Length > _index)
+            if (_content.Length > _index)
             {
-                return _s[_index++];
+                return _content[_index++];
             }
 
             return null;
         }
 
-        internal string MoveNext(int count)
+        public string MoveNext(int count)
         {
-            if (_s.Length >= _index + count)
+            if (_content.Length >= _index + count)
             {
-                string result = _s.Substring(_index, count);
+                string result = _content.Substring(_index, count);
                 _index += count;
 
                 return result;
@@ -52,7 +53,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             return null;
         }
 
-        internal void MovePrev()
+        public void MovePrev()
         {
             if (_index > 0)
             {
@@ -62,17 +63,17 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
         public override string ToString()
         {
-            if (_s.Length > _index)
+            if (_content.Length > _index)
             {
-                return _s.Substring(_index);
+                return _content.Substring(_index);
             }
 
             return String.Empty;
         }
 
-        internal string GetDebugString(string message)
+        public string GetDebugString(string message)
         {
-            return message + " (" + _index + "): " + _s;
+            return message + " (" + _index + "): " + _content;
         }
     }
 }
