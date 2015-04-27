@@ -3,7 +3,7 @@
 
 namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
-    internal class AtlasWeb
+    internal class JsonDeserializerResource
     {
         internal static string JSON_BadEscape
         {

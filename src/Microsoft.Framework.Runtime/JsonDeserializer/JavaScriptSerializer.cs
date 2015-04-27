@@ -29,7 +29,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException(AtlasWeb.JSON_InvalidMaxJsonLength);
+                    throw new ArgumentOutOfRangeException(JsonDeserializerResource.JSON_InvalidMaxJsonLength);
                 }
                 _maxJsonLength = value;
             }
@@ -45,7 +45,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             {
                 if (value < 1)
                 {
-                    throw new ArgumentOutOfRangeException(AtlasWeb.JSON_InvalidRecursionLimit);
+                    throw new ArgumentOutOfRangeException(JsonDeserializerResource.JSON_InvalidRecursionLimit);
                 }
                 _recursionLimit = value;
             }
@@ -59,7 +59,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             }
             if (input.Length > MaxJsonLength)
             {
-                throw new ArgumentException(AtlasWeb.JSON_MaxJsonLengthExceeded, "input");
+                throw new ArgumentException(JsonDeserializerResource.JSON_MaxJsonLengthExceeded, "input");
             }
 
             object o = JavaScriptObjectDeserializer.BasicDeserialize(input, RecursionLimit, this);

@@ -20,7 +20,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             object result = jsod.DeserializeInternal(0);
             if (jsod._s.GetNextNonEmptyChar() != null)
             {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, AtlasWeb.JSON_IllegalPrimitive, jsod._s.ToString()));
+                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, JsonDeserializerResource.JSON_IllegalPrimitive, jsod._s.ToString()));
             }
             return result;
         }
@@ -36,7 +36,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
         {
             if (++depth > _depthLimit)
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_DepthLimitExceeded));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_DepthLimitExceeded));
             }
 
             var c = _s.GetNextNonEmptyChar();
@@ -71,7 +71,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             var c = _s.MoveNext();
             if (c != '[')
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidArrayStart));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidArrayStart));
             }
 
             bool expectMore = false;
@@ -92,16 +92,16 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                 expectMore = true;
                 if (c != ',')
                 {
-                    throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidArrayExpectComma));
+                    throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidArrayExpectComma));
                 }
             }
             if (expectMore)
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidArrayExtraComma));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidArrayExtraComma));
             }
             if (c != ']')
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidArrayEnd));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidArrayEnd));
             }
             return list;
         }
@@ -112,7 +112,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             var c = _s.MoveNext();
             if (c != '{')
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_ExpectedOpenBrace));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_ExpectedOpenBrace));
             }
 
             // Loop through each JSON entry in the input object
@@ -122,7 +122,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
                 if (c == ':')
                 {
-                    throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidMemberName));
+                    throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidMemberName));
                 }
 
                 string memberName = null;
@@ -133,7 +133,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                     c = _s.GetNextNonEmptyChar();
                     if (c != ':')
                     {
-                        throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidObject));
+                        throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidObject));
                     }
                 }
 
@@ -163,13 +163,13 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
                 if (c != ',')
                 {
-                    throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidObject));
+                    throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidObject));
                 }
             }
 
             if (c != '}')
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_InvalidObject));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_InvalidObject));
             }
 
             return dictionary;
@@ -285,7 +285,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             }
 
             // must be an illegal primitive
-            throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, AtlasWeb.JSON_IllegalPrimitive, input));
+            throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, JsonDeserializerResource.JSON_IllegalPrimitive, input));
         }
 
         private string DeserializePrimitiveToken()
@@ -352,7 +352,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                 }
             }
 
-            throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_UnterminatedString));
+            throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_UnterminatedString));
         }
 
         private void AppendCharToBuilder(char? c, StringBuilder sb)
@@ -387,7 +387,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             }
             else
             {
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_BadEscape));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_BadEscape));
             }
         }
 
@@ -401,7 +401,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             else if (c != '"')
             {
                 // Fail if the string is not quoted.
-                throw new ArgumentException(_s.GetDebugString(AtlasWeb.JSON_StringNotQuoted));
+                throw new ArgumentException(_s.GetDebugString(JsonDeserializerResource.JSON_StringNotQuoted));
             }
 
             return quoteChar;
