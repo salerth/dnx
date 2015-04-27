@@ -10,24 +10,25 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
     internal class JsonObjectDeserializer
     {
-        internal const int DefaultRecursionLimit = 100;
-        internal const int DefaultMaxJsonLength = 2097152;
-
-        private readonly int _depthLimit;
-        private readonly int _lengthLimit;
+        internal const int DefaultMaxDeserializeDepth = 100;
+        internal const int DefaultMaxInputLength = 2097152;
 
         private JsonString _input;
 
-        public JsonObjectDeserializer()
-            :this(DefaultMaxJsonLength, DefaultRecursionLimit)
+        public JsonObjectDeserializer(int maxInputLength, int maxDeserializeDepth)
         {
+            MaxInputLength = maxInputLength;
+            MaxDeserializeDepth = maxDeserializeDepth;
         }
 
-        public JsonObjectDeserializer(int lengthLimit, int depthLimit)
-        {
-            _lengthLimit = lengthLimit;
-            _depthLimit = depthLimit;
-        }
+        public int MaxInputLength { get; private set; } = DefaultMaxInputLength;
+
+        public int MaxDeserializeDepth { get; private set; } = DefaultMaxDeserializeDepth;
+
+        /// <summary>
+        /// maximum number of entries a Json deserialized dictionary is allowed to have
+        /// </summary>
+        public int MaxJsonDeserializerMembers { get; } = Int32.MaxValue;
 
         public object Deserialize(string input)
         {
@@ -36,7 +37,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                 throw new ArgumentNullException(nameof(input));
             }
 
-            if (input.Length > _lengthLimit)
+            if (input.Length > MaxInputLength)
             {
                 throw new ArgumentException(JsonDeserializerResource.JSON_MaxJsonLengthExceeded, nameof(input));
             }
@@ -55,7 +56,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
         private object DeserializeInternal(int depth)
         {
-            if (++depth > _depthLimit)
+            if (++depth > MaxDeserializeDepth)
             {
                 throw new ArgumentException(_input.GetDebugString(JsonDeserializerResource.JSON_DepthLimitExceeded));
             }
@@ -196,27 +197,12 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             return dictionary;
         }
 
-
-        // maximum number of entries a Json deserialized dictionary is allowed to have
-        private const int DefaultMaxJsonDeserializerMembers = Int32.MaxValue;
-
-        // MSRC 12038: limit the maximum number of entries that can be added to a Json deserialized dictionary,
-        // as a large number of entries potentially can result in too many hash collisions that may cause DoS
-        private void ThrowIfMaxJsonDeserializerMembersExceeded(int count)
-        {
-            if (count >= DefaultMaxJsonDeserializerMembers)
-            {
-                throw new InvalidOperationException(string.Format("The maximum number of items has already been deserialized into a single dictionary by the JavaScriptSerializer. The value is '{0}'.", DefaultMaxJsonDeserializerMembers));
-            }
-        }
-
         // Deserialize a member name.
         // e.g. { MemberName: ... }
         // e.g. { 'MemberName': ... }
         // e.g. { "MemberName": ... }
         private string DeserializeMemberName()
         {
-
             // It could be double quoted, single quoted, or not quoted at all
             var c = _input.GetNextNonEmptyChar();
             if (c == null)
@@ -426,6 +412,16 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
             }
 
             return quoteChar;
+        }
+
+        // MSRC 12038: limit the maximum number of entries that can be added to a Json deserialized dictionary,
+        // as a large number of entries potentially can result in too many hash collisions that may cause DoS
+        private void ThrowIfMaxJsonDeserializerMembersExceeded(int count)
+        {
+            if (count >= MaxJsonDeserializerMembers)
+            {
+                throw new InvalidOperationException(string.Format(JsonDeserializerResource.JSON_MaxJsonDeserializerMembers, MaxJsonDeserializerMembers));
+            }
         }
 
         private static bool IsNextElementArray(char? c)

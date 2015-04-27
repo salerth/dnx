@@ -79,5 +79,10 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
         {
             get { return "Unterminated string passed in."; }
         }
+
+        internal static string JSON_MaxJsonDeserializerMembers
+        {
+            get { return "The maximum number of items has already been deserialized into a single dictionary by the JavaScriptSerializer.The value is '{0}'."; }
+        }
     }
 }
