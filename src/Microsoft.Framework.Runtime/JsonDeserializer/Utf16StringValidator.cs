@@ -5,7 +5,9 @@ using System;
 
 namespace Micrsoft.Framework.Runtime.JsonDeserializer
 {
-    // This class contains utility methods for dealing with security contexts when crossing AppDomain boundaries.
+    /// <summary>
+    /// This class contains utility methods for dealing with security contexts when crossing AppDomain boundaries.
+    /// </summary>
     internal static class Utf16StringValidator
     {
         private const char UNICODE_NULL_CHAR = '\0';
@@ -68,6 +70,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                 // Otherwise, this is a non-surrogate character and just move to the
                 // next character.
             }
+
             return new String(chars);
         }
     }
