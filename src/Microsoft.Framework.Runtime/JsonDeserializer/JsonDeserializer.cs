@@ -6,29 +6,19 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace Micrsoft.Framework.Runtime.JsonDeserializer
+namespace Microsoft.Framework.Runtime.Json
 {
     internal class JsonDeserializer
     {
-        internal const int DefaultMaxDeserializeDepth = 100;
-        internal const int DefaultMaxInputLength = 2097152;
+        // maximum number of entries a Json deserialized dictionary is allowed to have
+        private const int _maxJsonDeserializerMembers = Int32.MaxValue;
+        private const int _maxDeserializeDepth = 100;
+        private const int _maxInputLength = 2097152;
 
         private JsonString _input;
 
-        public JsonDeserializer(int maxInputLength, int maxDeserializeDepth)
-        {
-            MaxInputLength = maxInputLength;
-            MaxDeserializeDepth = maxDeserializeDepth;
-        }
-
-        public int MaxInputLength { get; private set; } = DefaultMaxInputLength;
-
-        public int MaxDeserializeDepth { get; private set; } = DefaultMaxDeserializeDepth;
-
         /// <summary>
-        /// maximum number of entries a Json deserialized dictionary is allowed to have
         /// </summary>
-        public int MaxJsonDeserializerMembers { get; } = Int32.MaxValue;
 
         public object Deserialize(string input)
         {
@@ -37,7 +27,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
                 throw new ArgumentNullException(nameof(input));
             }
 
-            if (input.Length > MaxInputLength)
+            if (input.Length > _maxInputLength)
             {
                 throw new ArgumentException(JsonDeserializerResource.JSON_MaxJsonLengthExceeded, nameof(input));
             }
@@ -56,7 +46,7 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
 
         private object DeserializeInternal(int depth)
         {
-            if (++depth > MaxDeserializeDepth)
+            if (++depth > _maxDeserializeDepth)
             {
                 throw new ArgumentException(_input.GetDebugString(JsonDeserializerResource.JSON_DepthLimitExceeded));
             }
@@ -418,9 +408,9 @@ namespace Micrsoft.Framework.Runtime.JsonDeserializer
         // as a large number of entries potentially can result in too many hash collisions that may cause DoS
         private void ThrowIfMaxJsonDeserializerMembersExceeded(int count)
         {
-            if (count >= MaxJsonDeserializerMembers)
+            if (count >= _maxJsonDeserializerMembers)
             {
-                throw new InvalidOperationException(string.Format(JsonDeserializerResource.JSON_MaxJsonDeserializerMembers, MaxJsonDeserializerMembers));
+                throw new InvalidOperationException(string.Format(JsonDeserializerResource.JSON_MaxJsonDeserializerMembers, _maxJsonDeserializerMembers));
             }
         }
 
