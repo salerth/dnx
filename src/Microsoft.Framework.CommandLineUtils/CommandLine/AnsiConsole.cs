@@ -9,34 +9,28 @@ namespace Microsoft.Framework.Runtime.Common.CommandLine
 {
     internal class AnsiConsole
     {
-        private AnsiConsole(TextWriter writer, IRuntimeEnvironment runtimeEnv)
+        private AnsiConsole(TextWriter writer, bool useAnsiCodes)
         {
             Writer = writer;
 
-            var useColors = runtimeEnv.OperatingSystem == "Windows" || runtimeEnv.RuntimeType == "Mono";
-
-            if (useColors)
+            _useAnsiCodes = useAnsiCodes;
+            if (_useAnsiCodes)
             {
-                WriteLine = WriteLineParse;
                 OriginalForegroundColor = Console.ForegroundColor;
             }
-            else
-            {
-                WriteLine = WriteLineNoParse;
-            }
         }
 
-        public Action<string> WriteLine { get; private set; }
         private int _boldRecursion;
+        private bool _useAnsiCodes;
 
-        public static AnsiConsole GetOutput(IRuntimeEnvironment runtimeEnv)
+        public static AnsiConsole GetOutput(bool useAnsiCodes)
         {
-            return new AnsiConsole(Console.Out, runtimeEnv);
+            return new AnsiConsole(Console.Out, useAnsiCodes);
         }
 
-        public static AnsiConsole GetError(IRuntimeEnvironment runtimeEnv)
+        public static AnsiConsole GetError(bool useAnsiCodes)
         {
-            return new AnsiConsole(Console.Error, runtimeEnv);
+            return new AnsiConsole(Console.Error, useAnsiCodes);
         }
 
         public TextWriter Writer { get; }
@@ -59,13 +53,14 @@ namespace Microsoft.Framework.Runtime.Common.CommandLine
             Console.ForegroundColor = (ConsoleColor)((int)Console.ForegroundColor ^ 0x08);
         }
 
-        private void WriteLineNoParse(string message)
+        public void WriteLine(string message)
         {
-            Writer.WriteLine(message);
-        }
+            if (!_useAnsiCodes)
+            {
+                Writer.WriteLine(message);
+                return;
+            }
 
-        private void WriteLineParse(string message)
-        {
             var sb = new StringBuilder();
             var escapeScan = 0;
             for (; ;)

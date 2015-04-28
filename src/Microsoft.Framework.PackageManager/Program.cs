@@ -522,12 +522,14 @@ namespace Microsoft.Framework.PackageManager
 
         private Reports CreateReports(bool verbose, bool quiet)
         {
-            IReport output = new Report(AnsiConsole.GetOutput(_runtimeEnv));
+            var useAnsiCodes = _runtimeEnv.OperatingSystem == "Windows";
+
+            IReport output = new Report(AnsiConsole.GetOutput(useAnsiCodes));
             var reports = new Reports()
             {
                 Information = output,
                 Verbose = verbose ? output : new NullReport(),
-                Error = new Report(AnsiConsole.GetError(_runtimeEnv)),
+                Error = new Report(AnsiConsole.GetError(useAnsiCodes)),
             };
 
             // If "--verbose" and "--quiet" are specified together, "--verbose" wins
